@@ -1,0 +1,190 @@
+#!/usr/bin/python3
+
+import os, sys, re
+
+def print_help():
+    print("USAGE")
+    print("\t./301dannon file")
+    print("")
+    print("DESCRIPTION")
+    print("\tfile\tfile that contains the numbers to be sorted, separated by spaces")
+
+def parsing_file(a):
+    if os.access(a, os.F_OK):
+        file = open(a, "r")
+        contenu = file.readlines()
+        file.close()
+        nb = contenu[0].split()
+        new_list = []
+        for item in nb:
+            try:
+                new_list.append(float(item))
+            except:
+                exit (84)
+        return(new_list)
+    else:
+        exit (84)
+
+def select(list):
+    i =0
+    r =0
+    m = 0
+    while i < len(list):
+        m = i
+        j = i +1
+        while j< len(list):
+            if list[j] < list[m]:
+                m = j
+            r =r + 1
+            j =j + 1
+        if min != i:
+            t =list[m]
+            list[m] =list[i]
+            list[i] = t
+        i = i + 1
+    return (r)
+
+def insertion(list):
+    i = 1
+    r = 0
+    x = 0
+    j = 0
+    while i < len(list):
+        x = list[i]
+        j = i
+        while j > 0:
+            list[j] = list[j - 1]
+            j = j - 1
+        while j < i and x > list[j + 1]:
+            r = r + 1
+            list[j] = list[j + 1]
+            j = j + 1
+        if j < i and x < list[j + 1]:
+            r = r + 1
+        list[j] = x
+        i = i + 1
+    return (r)
+
+def bubble(list):
+    r = 0
+    i = len(list) - 1
+    if (len(list) == 1):
+        return 0
+    while i != 1:
+        j = 0
+        while j < i:
+            r = r + 1
+            if (list[j + 1] < list[j]):
+                k = list[j + 1]
+                list[j + 1] = list[j]
+                list[j] = k
+            j = j + 1
+        i = i - 1
+    return (r + 1)
+
+def fusion(a, b, comp):
+    if len(a) == 0:
+        return b
+    elif len(b) == 0:
+        return a
+    comp.append(0)
+    if a[0] <= b[0]:
+        c = [a[0]]
+        del a[0]
+        d = (fusion(a, b, comp))
+        return  c + d
+    else:
+        c = [b[0]]
+        del b[0]
+        d = (fusion(a, b, comp))
+        return c + d
+
+def partit(list, a, b):
+    pivot = list[b]
+    i = a - 1
+    j = a
+    while(j <= b - 1):
+        if (list[j] < pivot):
+            i = i + 1
+            tmp = list[i]
+            list[i] = list[j]
+            list[j] = tmp
+        j = j + 1
+    tmp = list[b]
+    list[b] = list[i + 1]
+    list[i + 1] = tmp
+    return (i + 1)
+
+def quick(list, a, b):
+    r = 0
+    if (a < b):
+        pivot = partit(list, a, b)
+        r = b - a - 1
+        r = r + quick(list, a, pivot - 1)
+        r = r + quick(list, pivot + 1, b)
+    return (r)
+
+def trif(list, comp):
+    if len(list) <= 1:
+        return  list
+    else:
+        a = []
+        b = []
+        i = 0
+        while i < (len(list) / 2):
+            a.append(list[i])
+            i += 1
+        while i < len(list):
+            b.append(list[i])
+            i += 1
+        c = fusion(trif(a, comp), trif(b, comp), comp)
+        return (c)
+
+def main():
+    comp = []
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-h":
+            print_help()
+        else:
+            list = parsing_file(sys.argv[1])
+            if len(list) == 1:
+                print (len(list), "element")
+            else:
+                print (len(list), "elements")
+            if select(list) > 1:
+                list = parsing_file(sys.argv[1])
+                print ("select sort :", select(list), "comparisons")
+            else:
+                list = parsing_file(sys.argv[1])
+                print ("select sort :", select(list), "comparison")
+            list = parsing_file(sys.argv[1])
+            if insertion(list) > 1:
+                list = parsing_file(sys.argv[1])
+                print ("insertion sort :", insertion(list), "comparisons")
+            else:
+                list = parsing_file(sys.argv[1])
+                print ("insertion sort :", insertion(list), "comparison")
+            list = parsing_file(sys.argv[1])
+            if bubble(list) > 1:
+                list = parsing_file(sys.argv[1])
+                print ("bubble sort :", bubble(list), "comparisons")
+            else:
+                list = parsing_file(sys.argv[1])
+                print ("bubble sort :", bubble(list), "comparison")
+            list = parsing_file(sys.argv[1])
+            trif(list, comp)
+            if len(comp) > 1:
+                print ("fusion sort :", len(comp), "comparisons")
+            else:
+                print ("fusion sort :", len(comp), "comparison")
+            list = parsing_file(sys.argv[1])
+            if quick(list, 0, len(list) - 1) > 1:
+                print("quicksort :", quick(list, 0, len(list) - 1), "comparisons")
+            else:
+                print("quicksort :", quick(list, 0, len(list) - 1), "comparisons")
+            print(list)
+    else:
+        print_help()
+        exit (84)
+
+main()
